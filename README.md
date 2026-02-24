@@ -22,7 +22,7 @@ static/** linguist-generated
 
 ## 🛠 Требования
 
-- Python 3.12+
+- Python 3.13+
 - uv (используется как менеджер окружения и зависимостей)
 - PostgreSQL
 
@@ -76,7 +76,7 @@ uv run uvicorn app.main:app --reload
 ## 🧪 Пример запроса выбора героя
 
 ```json
-POST /heroes/select
+POST /heroes/choice
 
 {
   "gender": "мужской",
