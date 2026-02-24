@@ -5,8 +5,28 @@ from sqlalchemy import select, any_
 from typing import List
 
 
-class HeroService:
+def normalize_trait(word: str) -> str:
+    """
+    Нормализует характеристику, убирая женские окончания русских прилагательных.
+    Примеры: лесная -> лесной, красивая -> красивый, злая -> злой
+    """
+    word = word.lower().strip()
+    
+    # Убираем женские окончания
+    if word.endswith('ная'):
+        # лесная -> лесной, черная -> черный
+        return word[:-3] + 'ной'
+    elif word.endswith('ая'):
+        # красивая -> красивый, добрая -> добрый, злая -> злой
+        return word[:-2] + 'ый'
+    elif word.endswith('яя'):
+        # синяя -> синий
+        return word[:-2] + 'ий'
+    
+    return word
 
+
+class HeroService:
 
     @staticmethod
     async def add_hero(data: HeroCreate, db: AsyncSession) -> List[HeroResponse]:
@@ -15,6 +35,10 @@ class HeroService:
         payload["gender"] = data.gender.value
         payload["height"] = data.height.value
         payload["age"] = data.age.value
+        
+        # Нормализуем характеры и трейты (убираем женские окончания)
+        payload["character"] = [normalize_trait(ch) for ch in payload.get("character", [])]
+        payload["traits"] = [normalize_trait(tr) for tr in payload.get("traits", [])]
 
         db_hero = Hero(**payload)
 
@@ -26,7 +50,7 @@ class HeroService:
     
 
     @staticmethod
-    async def choice_hero(data: HeroFilter, db: AsyncSession) -> HeroResponse:
+    async def choice_hero(data: HeroFilter, db: AsyncSession) -> List[HeroResponse]:
 
         query = select(Hero)
 
@@ -40,15 +64,17 @@ class HeroService:
         if data.age:
             query = query.where(Hero.age == data.age.value)
 
-        # Фильтры по характеру
+        # Фильтры по характеру (нормализуем при поиске)
         if data.character:
             for ch in data.character:
-                query = query.where(ch.lower() == any_(Hero.character))
+                normalized_ch = normalize_trait(ch).lower()
+                query = query.where(normalized_ch == any_(Hero.character))
 
-        # Фильтр по признакам
+        # Фильтр по признакам (нормализуем при поиске)
         if data.traits:
             for tr in data.traits:
-                query = query.where(tr.lower() == any_(Hero.traits))
+                normalized_tr = normalize_trait(tr).lower()
+                query = query.where(normalized_tr == any_(Hero.traits))
 
         result = await db.execute(query)
         heroes = result.scalars().all()

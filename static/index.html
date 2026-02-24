@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Система выбора сказочных героев</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>✨ Система выбора сказочных героев ✨</h1>
+            <nav class="nav">
+                <button class="nav-btn active" data-page="heroes">Галерея героев</button>
+                <button class="nav-btn" data-page="add">Добавить героя</button>
+                <button class="nav-btn" data-page="search">Поиск по характеристикам</button>
+            </nav>
+        </header>
+
+        <main class="content">
+            <!-- Страница 1: Галерея героев -->
+            <div class="page active" id="heroes-page">
+                <h2>Все герои</h2>
+                <div class="heroes-grid" id="heroes-grid">
+                    <div class="loading">Загрузка...</div>
+                </div>
+            </div>
+
+            <!-- Страница 2: Добавление героя -->
+            <div class="page" id="add-page">
+                <h2>Добавить нового героя</h2>
+                <form id="add-hero-form" class="hero-form">
+                    <div class="form-group">
+                        <label for="name">Имя героя:</label>
+                        <input 
+                            type="text" 
+                            id="name" 
+                            name="name" 
+                            required
+                            placeholder="Введите имя"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="gender">Пол:</label>
+                        <select id="gender" name="gender" required>
+                            <option value="">-- Выберите пол --</option>
+                            <option value="мужской">Мужской</option>
+                            <option value="женский">Женский</option>
+                            <option value="другой">Другой</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="height">Рост:</label>
+                        <select id="height" name="height" required>
+                            <option value="">-- Выберите рост --</option>
+                            <option value="высокий">Высокий</option>
+                            <option value="средний">Средний</option>
+                            <option value="низкий">Низкий</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="age">Возраст:</label>
+                        <select id="age" name="age" required>
+                            <option value="">-- Выберите возраст --</option>
+                            <option value="молодой">Молодой</option>
+                            <option value="взрослый">Взрослый</option>
+                            <option value="старый">Старый</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Характер:</label>
+                        <div class="input-with-suggestion">
+                            <input 
+                                type="text" 
+                                id="character-input"
+                                placeholder="Введите характер (смелый, умный, добрый...)"
+                                autocomplete="off"
+                            >
+                            <ul class="suggestions" id="character-suggestions"></ul>
+                        </div>
+                        <div class="tags" id="character-tags"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Трейты (особенности):</label>
+                        <div class="input-with-suggestion">
+                            <input 
+                                type="text" 
+                                id="traits-input"
+                                placeholder="Введите трейт (волшебник, богатырь, красавица...)"
+                                autocomplete="off"
+                            >
+                            <ul class="suggestions" id="traits-suggestions"></ul>
+                        </div>
+                        <div class="tags" id="traits-tags"></div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Добавить героя</button>
+                </form>
+                <div id="add-message" class="message"></div>
+            </div>
+
+            <!-- Страница 3: Поиск по характеристикам -->
+            <div class="page" id="search-page">
+                <h2>Поиск героя по характеристикам</h2>
+                <form id="search-form" class="hero-form">
+                    <div class="form-group">
+                        <label for="search-gender">Пол:</label>
+                        <select id="search-gender" name="gender">
+                            <option value="">-- Любой --</option>
+                            <option value="мужской">Мужской</option>
+                            <option value="женский">Женский</option>
+                            <option value="другой">Другой</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="search-height">Рост:</label>
+                        <select id="search-height" name="height">
+                            <option value="">-- Любой --</option>
+                            <option value="высокий">Высокий</option>
+                            <option value="средний">Средний</option>
+                            <option value="низкий">Низкий</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="search-age">Возраст:</label>
+                        <select id="search-age" name="age">
+                            <option value="">-- Любой --</option>
+                            <option value="молодой">Молодой</option>
+                            <option value="взрослый">Взрослый</option>
+                            <option value="старый">Старый</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Характер:</label>
+                        <div class="input-with-suggestion">
+                            <input 
+                                type="text" 
+                                id="search-character-input"
+                                placeholder="Введите характер"
+                                autocomplete="off"
+                            >
+                            <ul class="suggestions" id="search-character-suggestions"></ul>
+                        </div>
+                        <div class="tags" id="search-character-tags"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Трейты:</label>
+                        <div class="input-with-suggestion">
+                            <input 
+                                type="text" 
+                                id="search-traits-input"
+                                placeholder="Введите трейт"
+                                autocomplete="off"
+                            >
+                            <ul class="suggestions" id="search-traits-suggestions"></ul>
+                        </div>
+                        <div class="tags" id="search-traits-tags"></div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Поиск</button>
+                    <button type="button" id="clear-search" class="btn btn-secondary">Очистить фильтры</button>
+                </form>
+
+                <div id="search-results" class="heroes-grid"></div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/static/js/main.js"></script>
+</body>
+</html>
