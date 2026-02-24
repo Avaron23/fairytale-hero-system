@@ -1,5 +1,5 @@
 from pydantic import BaseModel, ConfigDict
-from typing import List
+from typing import List, Optional
 from enum import Enum
 
 
@@ -32,3 +32,10 @@ class HeroResponse(HeroCreate):
     id: int
 
     model_config = ConfigDict(from_attributes=True)
+
+class HeroFilter(BaseModel):
+    gender: Optional[GenderEnum] 
+    height: Optional[HeightEnum]
+    age: Optional[AgeEnum]
+    character: Optional[List[str]]
+    traits: Optional[List[str]]
